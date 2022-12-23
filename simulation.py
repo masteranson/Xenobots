@@ -9,7 +9,7 @@ class SIMULATION:
 
     def __init__(self): #Constructor
 
-        self.physicsClient = p.connect(p.GUI)
+        self.physicsClient = p.connect(p.DIRECT)
 
         self.world = WORLD()
         self.robot = ROBOT()
@@ -28,33 +28,11 @@ class SIMULATION:
             ROBOT.Sense(self.robot,i)
             ROBOT.Think(self.robot)
             ROBOT.Act(self.robot, i)
-            # print(pyrosim.Get_Touch_Sensor_Value_For_Link("Torso"))
-            # backLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("BackLeg")
-            # frontLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("FrontLeg")
-            #
-            # pyrosim.Set_Motor_For_Joint(
-            #
-            # bodyIndex = robotId,
-            #
-            # jointName = "BackLeg_Torso",
-            #
-            # controlMode = p.POSITION_CONTROL,
-            #
-            # targetPosition =  c.amplitude * np.sin(c.frequency * i + c.phaseOffset),
-            #
-            # maxForce = c.motorMaxForce)
-            #
-            # pyrosim.Set_Motor_For_Joint(
-            #
-            # bodyIndex = robotId,
-            #
-            # jointName = "Torso_FrontLeg",
-            #
-            # controlMode = p.POSITION_CONTROL,
-            #
-            # targetPosition =  c.amplitude * np.sin(c.frequency * i + c.phaseOffset),
-            #
-            # maxForce = c.motorMaxForce)
+
+
+    def Get_Fitness(self):
+        self.robot.Get_Fitness()
+
 
     def __del__(self): #Destructor
 
