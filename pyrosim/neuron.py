@@ -6,7 +6,7 @@ import pyrosim.pyrosim as pyrosim
 
 import pyrosim.constants as c
 
-class NEURON: 
+class NEURON:
 
     def __init__(self,line):
 
@@ -121,3 +121,10 @@ class NEURON:
     def Threshold(self):
 
         self.value = math.tanh(self.value)
+
+    def Update_Sensor_Neuron(self):
+
+        self.Set_Value(pyrosim.Get_Touch_Sensor_Value_For_Link(self.Get_Link_Name()))
+
+    def Update_Hidden_Or_Motor_Neuron(self):
+        self.Set_Value(math.pi/4)

@@ -23,9 +23,10 @@ class SIMULATION:
 
         for i in range(0,c.numLoop):
             #time.sleep(1/60)
-            print(i)
+            #print(i)
             p.stepSimulation()
             ROBOT.Sense(self.robot,i)
+            ROBOT.Think(self.robot)
             ROBOT.Act(self.robot, i)
             # print(pyrosim.Get_Touch_Sensor_Value_For_Link("Torso"))
             # backLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("BackLeg")
