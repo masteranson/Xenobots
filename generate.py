@@ -1,33 +1,38 @@
 import pyrosim.pyrosim as pyrosim
 
-pyrosim.Start_SDF("boxes.sdf")
 
-length = 1
-width = 1
-height = 1
 
-x= 0
-y = 0
-z = 0.5
+def Create_World():
 
-for i in range (0,3):
+    pyrosim.Start_SDF("world.sdf")
 
-    x = x + 1
-    y = 0
+    length = 1
+    width = 1
     height = 1
-    for j in range (0, 3):
 
-        y = y + 1
-        z = 0.5
-        height = 1
-        for k in range (0, 10):
+    x= 5
+    y = 5
+    z = 5.5
 
-            height = height * 0.9
+    pyrosim.Send_Cube(name="Box", pos=[x,y,z] , size=[width,length,height])
 
-            z = z + 1
-
-            pyrosim.Send_Cube(name="Box", pos=[x,y,z] , size=[width,length,height])
+    pyrosim.End()
 
 
+def Create_Robot():
 
-pyrosim.End()
+    length = 1
+    width = 1
+    height = 1
+
+    #TODO: make Torso the root cube
+    pyrosim.Start_URDF("body.urdf")
+    pyrosim.Send_Cube(name="Torso", pos=[0,0,0.5] , size=[width,length,height])
+    pyrosim.Send_Cube(name="FrontLeg", pos=[0.5,0,-0.5] , size=[width,length,height])
+    pyrosim.Send_Cube(name="BackLeg", pos=[-0.5,0,-0.5] , size=[width,length,height])
+    pyrosim.Send_Joint( name = "BackLeg_Torso" , parent= "Torso" , child = "BackLeg" , type = "revolute", position = [-0.5,0,0])
+    pyrosim.Send_Joint( name = "Torso_FrontLeg" , parent= "Torso" , child = "FrontLeg" , type = "revolute", position = [0.5,0,0])
+    pyrosim.End()
+
+Create_World()
+Create_Robot()
