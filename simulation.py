@@ -2,17 +2,25 @@ import pybullet as p
 import pybullet_data
 import pyrosim.pyrosim as pyrosim
 import constants as c
+import time
 from robot import ROBOT
 from world import WORLD
 
 class SIMULATION:
 
-    def __init__(self): #Constructor
+    def __init__(self, mode, solutionID): #Constructor
 
-        self.physicsClient = p.connect(p.DIRECT)
+        self.solutionID = solutionID
+        self.directOrGUI = mode #p.GUI or p.DIRECT
+
+        if mode =="GUI":
+            self.physicsClient = p.connect(p.GUI)
+        else:
+            self.physicsClient = p.connect(p.DIRECT)
+
 
         self.world = WORLD()
-        self.robot = ROBOT()
+        self.robot = ROBOT(self.solutionID)
 
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0,0,-9.8) #gravity
@@ -22,9 +30,13 @@ class SIMULATION:
     def run(self): #Run Method
 
         for i in range(0,c.numLoop):
-            #time.sleep(1/60)
+
             #print(i)
             p.stepSimulation()
+
+            if self.directOrGUI == p.GUI:
+                time.sleep(1/600)
+
             ROBOT.Sense(self.robot,i)
             ROBOT.Think(self.robot)
             ROBOT.Act(self.robot, i)

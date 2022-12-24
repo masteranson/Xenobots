@@ -1,17 +1,26 @@
 import solution as SOLUTION
 import constants as c
 import copy
+import os
 
-class HILL_CLIMBER:
+class PARALLEL_HILL_CLIMBER:
 
     def __init__(self):
-        self.parent = SOLUTION.SOLUTION()
+        #os.system('rm brain*.nndf')
+        os.system('rm fitness*.nndf')
+        self.parents= {}
+        self.nextAvailableID = 0
 
+        for i in range(0,c.populationSize):
+            self.parents[i] = SOLUTION.SOLUTION(self.nextAvailableID)
+            self.nextAvailableID += 1
 
     def Evolve(self):
-        for currentGeneration in range(0, c.numberOfGenerations):
-            self.Evolve_For_One_Generation()
 
+        self.Evaluate(self.parents)
+        print("Im here 1")
+        for currentGeneration in range(0,c.numberOfGenerations):
+            self.Evolve_For_One_Generation()
 
     def Evolve_For_One_Generation(self):
 
@@ -19,7 +28,11 @@ class HILL_CLIMBER:
 
         self.Mutate()
 
+        print("Im here 2")
+
         self.Evaluate(self.children)
+
+        print("Im here 3")
 
         self.Print()
 
@@ -51,8 +64,8 @@ class HILL_CLIMBER:
         for i in range(0,len(solutions)):
             solutions[i].Start_Simulation("DIRECT")
         for i in range(0,len(solutions)):
+            print("Waiting for end")
             solutions[i].Wait_For_Simulation_To_End()
-
 
     def Show_Best(self):
         bestkey = 0

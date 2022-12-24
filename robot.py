@@ -1,22 +1,23 @@
 from sensor import SENSOR
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
+import os
 from pyrosim.neuralNetwork import NEURAL_NETWORK
 from motor import MOTOR
 
 
 class ROBOT:
 
-    def __init__(self):
-
+    def __init__(self, solutionID):
+        self.solutionID = solutionID
         self.sensors = dict()
         self.motors = dict()
         self.robotId = p.loadURDF("body.urdf") #robot
-        self.nn = NEURAL_NETWORK("brain.nndf")
-
         pyrosim.Prepare_To_Simulate(self.robotId)
         ROBOT.Prepare_To_Sense(self)
         ROBOT.Prepare_To_Act(self)
+        self.nn = NEURAL_NETWORK("brain" + str(solutionID) + ".nndf")
+        os.system("rm "+"brain"+str(solutionID)+".nndf") #to avoid too many files
 
     def Prepare_To_Sense(self):
 
@@ -36,7 +37,6 @@ class ROBOT:
 
     def Act(self, t):
 
-
         for neuronName in self.nn.Get_Neuron_Names():
             if self.nn.Is_Motor_Neuron(neuronName):
                 jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)
@@ -52,8 +52,9 @@ class ROBOT:
         stateOfLinkZero = p.getLinkState(self.robotId,0)
         positionOfLinkZero = stateOfLinkZero[0]
         xCoordinateOfLinkZero = positionOfLinkZero[0]
-        print(xCoordinateOfLinkZero)
+        #print(xCoordinateOfLinkZero)
 
-        f = open("fitness.txt", "w")
+        f = open("tmp" + str(self.solutionID) + ".txt", "w")
         f.write(str(xCoordinateOfLinkZero))
         f.close()
+        os.system("mv tmp" + str(self.solutionID) + ".txt fitness" + str(self.solutionID) + ".txt")
