@@ -1,5 +1,4 @@
 import pybullet as p
-import pybullet_data
 import pyrosim.pyrosim as pyrosim
 import constants as c
 import time
@@ -22,10 +21,6 @@ class SIMULATION:
         self.world = WORLD()
         self.robot = ROBOT(self.solutionID)
 
-        p.setAdditionalSearchPath(pybullet_data.getDataPath())
-        p.setGravity(0,0,-9.8) #gravity
-        self.planeId = p.loadURDF("plane.urdf")
-        p.loadSDF("world.sdf")
 
     def run(self): #Run Method
 
@@ -41,6 +36,7 @@ class SIMULATION:
             ROBOT.Think(self.robot)
             ROBOT.Act(self.robot, i)
 
+        print("Finish Running")
 
     def Get_Fitness(self):
         self.robot.Get_Fitness()
