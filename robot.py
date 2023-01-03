@@ -1,6 +1,7 @@
 from sensor import SENSOR
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
+import numpy as np
 import os
 import constants as c
 from pyrosim.neuralNetwork import NEURAL_NETWORK
@@ -51,12 +52,31 @@ class ROBOT:
         #self.nn.Print()
 
     def Get_Fitness(self):
-        basePositionAndOrientation = p.getBasePositionAndOrientation(self.robotId)
-        basePosition = basePositionAndOrientation[0]
-        zCoordinateOfLinkZero = basePosition[2]
-        #print(xCoordinateOfLinkZero)
+
+        self.sensors["FrontLowerLeg"].Save_Values()
+        self.sensors["BackLowerLeg"].Save_Values()
+        self.sensors["LeftLowerLeg"].Save_Values()
+        self.sensors["RightLowerLeg"].Save_Values()
+
+        FrontLowerLegVal = np.load('FrontLowerLeg.npy')
+        BackLowerLegVal = np.load('BackLowerLeg.npy')
+        LeftLowerLegVal = np.load('LeftLowerLeg.npy')
+        RightLowerLegVal = np.load('RightLowerLeg.npy')
+
+        LegVal  = [FrontLowerLegVal, BackLowerLegVal, LeftLowerLegVal, RightLowerLegVal]
+
+        # Combining all four into vectors
+
+        meanVal = np.mean(LegVal, axis = 0)
+        condition = meanVal == 0
+
+        val = np.diff(np.where(np.concatenate(([condition[0]],
+                                     condition[:-1] != condition[1:],
+                                     [True])))[0])[::2]
+
+        meanVal = val[0]
 
         f = open("tmp" + str(self.solutionID) + ".txt", "w")
-        f.write(str(zCoordinateOfLinkZero))
+        f.write(str(meanVal) + "\n")
         f.close()
         os.system("mv tmp" + str(self.solutionID) + ".txt fitness" + str(self.solutionID) + ".txt")
