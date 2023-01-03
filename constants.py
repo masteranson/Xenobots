@@ -5,7 +5,7 @@ motorMaxForce = 100
 frequency = 1
 phaseOffset = np.pi/4
 amplitude = np.pi/4
-numberOfGenerations = 10
+numberOfGenerations = 30
 populationSize = 10
 
 length = 1
